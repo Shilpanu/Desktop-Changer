@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+       <title>Desktop Color Changer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            min-height: 100vh;
+            transition: background-color 0.5s;
+        }
+        
+        .desktop {
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .icons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+        
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .icon i { font-size: 30px; margin-bottom: 5px; }
+        .icon span { font-size: 12px; color: white; text-shadow: 1px 1px 2px black; }
+        
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .color-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .time-display {
+            color: white;
+            text-align: right;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+    
+</head>
+<body id="desktop">
+    <div class="desktop">
+        <!-- Desktop Icons -->
+        <div class="icons">
+            <div class="icon" onclick="changeColor('#3498db')">
+                <i class="fas fa-palette" style="color: #3498db;"></i>
+                <span>Blue Theme</span>
+            </div>
+            <div class="icon" onclick="changeColor('#2ecc71')">
+                <i class="fas fa-leaf" style="color: hsla(140, 87%, 21%, 0.506);"></i>
+                <span>Green Theme</span>
+            </div>
+            <div class="icon" onclick="changeColor('#e74c3c')">
+                <i class="fas fa-fire" style="color: hsla(16, 89%, 17%, 0.459);"></i>
+                <span>Red Theme</span>
+            </div>
+            <div class="icon" onclick="showCustomColor()">
+                <i class="fas fa-sliders-h"></i>
+                <span>Custom Color</span>
+            </div>
+        </div>
+        
+        <!-- Controls Panel -->
+        <div class="controls">
+            <h2><i class="fas fa-desktop"></i> Desktop Color Changer</h2>
+            
+            <div class="color-palette">
+                <div class="color-option" style="background: linear-gradient(45deg, #3498db, hsl(204, 97%, 45%));" onclick="changeGradient('#3498db', '#2980b9')"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #2ecc71, #27ae5f75);" onclick="changeGradient('#2ecc71', '#27ae60')"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #f36859, #c0392b);" onclick="changeGradient('#e74c3c', '#c0392b')"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #d7c1e0, #8e44ad);" onclick="changeGradient('#9b59b6', '#8e44ad')"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #f1c40f, #d3be0594);" onclick="changeGradient('#f1c40f', '#f39c12')"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #1abc9c, #16a085);" onclick="changeGradient('#1abc9c', '#16a085')"></div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <label>Custom Color:</label>
+                <input type="color" id="customColor" value="#3498db" onchange="changeColor(this.value)">
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label>Gradient Mode:</label><br>
+                <button onclick="setGradientMode()">Enable Gradient</button>
+                <button onclick="setSolidMode()">Solid Color</button>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                <p><i class="fas fa-info-circle"></i> <strong>Current Color:</strong> <span id="currentColor">#3498db</span></p>
+                <button onclick="saveTheme()" style="margin-top: 10px;">
+                    <i class="fas fa-save"></i> Save Theme
+                </button>
+            </div>
+        </div>
+        
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div>
+                <i class="fas fa-bars"></i> Start
+            </div>
+            <div id="clock" class="time-display"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initial color
+        let currentColor = '#3498db';
+        let isGradient = true;
+        
+        function changeColor(color) {
+            currentColor = color;
+            document.getElementById('desktop').style.background = color;
+            document.getElementById('currentColor').textContent = color;
+            document.getElementById('currentColor').style.color = color;
+            document.getElementById('customColor').value = color;
+        }
+        
+        function changeGradient(color1, color2) {
+            document.getElementById('desktop').style.background = 
+                `linear-gradient(135deg, ${color1}, ${color2})`;
+            document.getElementById('currentColor').textContent = 
+                `Gradient: ${color1} → ${color2}`;
+        }
+        
+        function showCustomColor() {
+            let color = prompt("Enter a color (name, hex, or rgb):", currentColor);
+            if (color) {
+                changeColor(color);
+            }
+        }
+        
+        function setGradientMode() {
+            isGradient = true;
+            changeGradient('#3498db', '#2980b9');
+        }
+        
+        function setSolidMode() {
+            isGradient = false;
+            changeColor(currentColor);
+        }
+        
+        function saveTheme() {
+            localStorage.setItem('desktopTheme', currentColor);
+            localStorage.setItem('isGradient', isGradient);
+            alert('Theme saved! It will be restored when you revisit this page.');
+        }
+        
+        function loadTheme() {
+            let savedColor = localStorage.getItem('desktopTheme');
+            let savedGradient = localStorage.getItem('isGradient');
+            
+            if (savedColor) {
+                currentColor = savedColor;
+                if (savedGradient === 'true') {
+                    setGradientMode();
+                } else {
+                    changeColor(savedColor);
+                }
+            }
+        }
+        
+        // Update clock
+        function updateClock() {
+            let now = new Date();
+            let timeString = now.toLocaleTimeString();
+            let dateString = now.toLocaleDateString();
+            document.getElementById('clock').innerHTML = 
+                `<i class="far fa-clock"></i> ${dateString} ${timeString}`;
+        }
+        
+        // Change color randomly every 10 seconds (optional)
+        function randomColor() {
+            let colors = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f1c40f', '#1abc9c'];
+            let randomIndex = Math.floor(Math.random() * colors.length);
+            changeColor(colors[randomIndex]);
+        }
+        
+        // Initialize
+        window.onload = function() {
+            loadTheme();
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Uncomment for auto-changing colors:
+            // setInterval(randomColor, 10000);
+        };
+    </script>
+</body>
+</html>
+    
+</body>
+</html>
